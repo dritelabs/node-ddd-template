@@ -1,0 +1,2 @@
+server/shared/infrastructure/proto/*.js linguist-generated=true
+*.js    linguist-generated=true
