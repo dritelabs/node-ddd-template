@@ -1,43 +1,25 @@
 import * as grpc from "@grpc/grpc-js";
-import * as controllers from "./controllers";
+import * as userControllers from "./controllers";
 
 import {
   ExampleService,
   IExampleServer,
 } from "../../infrastructure/proto/example_grpc_pb";
-import { HandleUnaryCall } from "../../../types";
+import { withContext } from "./with-context";
 
-type Controller = keyof typeof controllers;
-
-type ContextCallback<Request, Response, Context> = (
-  call: grpc.ServerUnaryCall<Request, Response>
-) => Promise<Context>;
+type Controller = keyof typeof userControllers;
 
 interface CreateServerOptions {
   context: (call: grpc.ServerUnaryCall<any, any>) => Promise<any>;
 }
 
-function withContext<Request, Response, Context>(
-  func: HandleUnaryCall<Request, Response, Context>,
-  context: ContextCallback<Request, Response, Context>
-) {
-  return async function (
-    call: grpc.ServerUnaryCall<Request, Response>,
-    callback: grpc.sendUnaryData<Response>
-  ) {
-    const ctx = await context(call);
-
-    func(call, callback, ctx);
-  };
-}
-
 export function createServer(options: CreateServerOptions) {
   const server = new grpc.Server();
-
+  const controllers = { ...userControllers };
   const controllerKeys = Object.keys(controllers) as Controller[];
 
   const controllerMapped = controllerKeys.reduce((prev, current) => {
-    let controller = controllers[current];
+    let controller = userControllers[current];
 
     controller = withContext(controller, options.context);
 
@@ -47,11 +29,11 @@ export function createServer(options: CreateServerOptions) {
   server.addService(ExampleService, controllerMapped);
 
   return {
-    listen: defineListen(server),
+    start: defineStart(server),
   };
 }
 
-function defineListen(server: grpc.Server) {
+function defineStart(server: grpc.Server) {
   return function listen(
     host: string,
     callback: (error: Error | null, port: number) => void

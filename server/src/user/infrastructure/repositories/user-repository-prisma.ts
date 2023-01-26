@@ -1,19 +1,25 @@
-import { ICreateUser } from "../../domain/create-user";
+import { CreateUser } from "../../domain/create-user";
 import { User } from "../../domain/user";
-import { UserRepository } from "./../../domain/user-repository";
+import { UserRepository } from "../../domain/user-repository";
+import prisma from "../../../shared/infrastructure/prisma";
 
 export function defineUserRepositoryPrisma(): UserRepository {
   return {
-    async createUser(input: ICreateUser) {
-      const user = new User({
-        email: input.email,
-        firstName: "",
-        id: "",
-        lastName: "",
-        password: input.password,
+    async createUser(input: CreateUser): Promise<User> {
+      const user = await prisma.user.create({
+        data: {
+          email: input.email,
+          password: "",
+        },
       });
 
-      return user;
+      return {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName!,
+        lastName: user.lastName!,
+        password: user.password,
+      };
     },
   };
 }

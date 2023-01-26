@@ -1,6 +1,6 @@
-import { IUser } from "./user";
-import { ICreateUser } from "./create-user";
+import { User } from "./user";
+import { CreateUser } from "./create-user";
 
 export interface UserRepository {
-  createUser(input: ICreateUser): Promise<IUser>;
+  createUser(input: CreateUser): Promise<User>;
 }

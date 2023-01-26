@@ -1,7 +1,7 @@
 import { User as UserModel } from "../../../../user/domain/user";
 import { User } from "../../../infrastructure/proto/example_pb";
 
-export function serializeUser(options: UserModel) {
+export function serializeUserMessage(options: UserModel) {
   const user = new User();
 
   user.setEmail(options.email);
