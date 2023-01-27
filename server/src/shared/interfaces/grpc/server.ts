@@ -6,14 +6,12 @@ import {
   IExampleServer,
 } from "../../infrastructure/proto/example_grpc_pb";
 import { withContext } from "./with-context";
+import { defineMemoryUserRepository } from "../../../user/infrastructure/repositories";
+import { defineUserUseCases } from "../../../user/application/use-cases";
 
 type Controller = keyof typeof userControllers;
 
-interface CreateServerOptions {
-  context: (call: grpc.ServerUnaryCall<any, any>) => Promise<any>;
-}
-
-export function createServer(options: CreateServerOptions) {
+export function createServer() {
   const server = new grpc.Server();
   const controllers = { ...userControllers };
   const controllerKeys = Object.keys(controllers) as Controller[];
@@ -21,7 +19,7 @@ export function createServer(options: CreateServerOptions) {
   const controllerMapped = controllerKeys.reduce((prev, current) => {
     let controller = userControllers[current];
 
-    controller = withContext(controller, options.context);
+    controller = withContext(controller, context);
 
     return Object.assign({}, prev, { [current]: controller });
   }, {}) as IExampleServer;
@@ -29,15 +27,27 @@ export function createServer(options: CreateServerOptions) {
   server.addService(ExampleService, controllerMapped);
 
   return {
-    start: defineStart(server),
+    start(host: string) {
+      server.bindAsync(
+        host,
+        grpc.ServerCredentials.createInsecure(),
+        (err: Error | null, port: number) => {
+          if (err) {
+            console.error(`Server error: ${err.message}`);
+          } else {
+            console.log(`Server bound on port: ${port}`);
+          }
+        }
+      );
+    },
   };
 }
 
-function defineStart(server: grpc.Server) {
-  return function listen(
-    host: string,
-    callback: (error: Error | null, port: number) => void
-  ) {
-    server.bindAsync(host, grpc.ServerCredentials.createInsecure(), callback);
+async function context(_: grpc.ServerUnaryCall<any, any>) {
+  const userRepository = defineMemoryUserRepository();
+  const userUseCases = defineUserUseCases({ userRepository });
+
+  return {
+    userUseCases,
   };
 }

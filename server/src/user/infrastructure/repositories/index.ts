@@ -1,3 +1,3 @@
-export * from "./user-repository-memory";
-export * from "./user-repository-prisma";
-export * from "./user-repository-sequelize";
+export * from "./memory-user-repository";
+export * from "./prisma-user-repository";
+export * from "./sequelize-user-repository";

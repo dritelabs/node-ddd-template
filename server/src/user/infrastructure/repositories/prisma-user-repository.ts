@@ -1,9 +1,9 @@
-import { CreateUser } from "../../domain/create-user";
 import { User } from "../../domain/user";
 import { UserRepository } from "../../domain/user-repository";
-import prisma from "../../../shared/infrastructure/prisma";
+import { prisma } from "../../../shared/infrastructure/prisma";
+import { CreateUser } from "../../domain";
 
-export function defineUserRepositoryPrisma(): UserRepository {
+export function definePrismaUserRepository(): UserRepository {
   return {
     async createUser(input: CreateUser): Promise<User> {
       const user = await prisma.user.create({

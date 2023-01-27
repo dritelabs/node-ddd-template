@@ -1,5 +1,5 @@
-import { CreateUser } from "./../../domain/create-user";
-import { UserRepository } from "./../../domain/user-repository";
+import { CreateUser } from "../../domain/create-user";
+import { UserRepository } from "../../domain/user-repository";
 
 interface DefineCreateUser {
   userRepository: UserRepository;

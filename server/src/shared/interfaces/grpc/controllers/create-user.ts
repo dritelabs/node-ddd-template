@@ -4,18 +4,18 @@ import {
 } from "../../../infrastructure/proto/example_pb";
 import { Context, HandleUnaryCall } from "../../../../types";
 import {
-  serializeCreateUserEntity,
-  serializeUserMessage,
-} from "../serializers";
+  mapCreateUserRequestMessageToCreateUserDomain,
+  mapUserDomainToUserMessage,
+} from "../../../../user/infrastructure/mappers";
 
 export const createUser: HandleUnaryCall<
   CreateUserRequest,
   User,
   Context
 > = async (call, callback, context) => {
-  const request = serializeCreateUserEntity(call.request);
-  const created = await context.userUseCases.createUser(request);
-  const response = serializeUserMessage(created);
+  const payload = mapCreateUserRequestMessageToCreateUserDomain(call.request);
+  const created = await context.userUseCases.createUser(payload);
+  const response = mapUserDomainToUserMessage(created);
 
   callback(null, response);
 };
