@@ -1,8 +1,6 @@
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import { defineUserUseCases } from "../../../user/application/use-cases";
-
-import { definePrismaUserRepository } from "../../../user/infrastructure/repositories";
+import { bootstrap } from "../../../user";
 
 const typeDefs = `#graphql
   type User {
@@ -45,12 +43,7 @@ export function createServer() {
         listen: { host: _host, port: Number(port) },
 
         async context() {
-          const userRepository = definePrismaUserRepository();
-          const userUseCases = defineUserUseCases({ userRepository });
-
-          return {
-            userUseCases,
-          };
+          return bootstrap({ repository: "prisma" });
         },
       });
 

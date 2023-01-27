@@ -6,8 +6,7 @@ import {
   IExampleServer,
 } from "../../infrastructure/proto/example_grpc_pb";
 import { withContext } from "./with-context";
-import { defineMemoryUserRepository } from "../../../user/infrastructure/repositories";
-import { defineUserUseCases } from "../../../user/application/use-cases";
+import { bootstrap } from "../../../user";
 
 type Controller = keyof typeof userControllers;
 
@@ -44,10 +43,5 @@ export function createServer() {
 }
 
 async function context(_: grpc.ServerUnaryCall<any, any>) {
-  const userRepository = defineMemoryUserRepository();
-  const userUseCases = defineUserUseCases({ userRepository });
-
-  return {
-    userUseCases,
-  };
+  return bootstrap({ repository: "prisma" });
 }

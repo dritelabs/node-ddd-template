@@ -1,5 +1,5 @@
 import { ServerUnaryCall, sendUnaryData } from "@grpc/grpc-js";
-import { HandleUnaryCall } from "../../../types";
+import { HandleUnaryCall } from "./types";
 
 type ContextCallback<Request, Response, Context> = (
   call: ServerUnaryCall<Request, Response>

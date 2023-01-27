@@ -2,7 +2,7 @@ import {
   CreateUserRequest,
   User,
 } from "../../../infrastructure/proto/example_pb";
-import { Context, HandleUnaryCall } from "../../../../types";
+import { Context, HandleUnaryCall } from "../types";
 import {
   mapCreateUserRequestMessageToCreateUserDomain,
   mapUserDomainToUserMessage,

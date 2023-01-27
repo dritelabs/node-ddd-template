@@ -1,5 +1,5 @@
 import { ServerUnaryCall, sendUnaryData } from "@grpc/grpc-js";
-import { defineUserUseCases } from "../user/application/use-cases";
+import { bootstrap } from "../../../../user";
 
 export type HandleUnaryCall<Request, Response, Context> = (
   call: ServerUnaryCall<Request, Response>,
@@ -7,6 +7,4 @@ export type HandleUnaryCall<Request, Response, Context> = (
   context: Context
 ) => void;
 
-export interface Context {
-  userUseCases: ReturnType<typeof defineUserUseCases>;
-}
+export type Context = ReturnType<typeof bootstrap>;
