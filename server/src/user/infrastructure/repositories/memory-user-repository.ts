@@ -1,17 +1,18 @@
-import { CreateUser } from "../../domain/create-user";
-import { User } from "../../domain/user";
 import { UserRepository } from "../../domain/user-repository";
 
 export function defineMemoryUserRepository(): UserRepository {
   return {
-    async createUser(input: CreateUser): Promise<User> {
-      return {
-        id: "",
-        email: input.email,
-        firstName: "",
-        lastName: "",
-        password: input.password,
-      };
+    createUser(input) {
+      throw Error("No implemented");
+    },
+    getUserById(input) {
+      throw Error("No implemented");
+    },
+    updateUser(input) {
+      throw Error("No implemented");
+    },
+    deleteUser(input) {
+      throw Error("No implemented");
     },
   };
 }

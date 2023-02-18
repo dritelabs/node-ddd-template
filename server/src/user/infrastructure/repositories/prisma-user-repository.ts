@@ -1,5 +1,3 @@
-import { CreateUser } from "../../domain/create-user";
-import { User } from "../../domain/user";
 import { UserRepository } from "../../domain/user-repository";
 import { prisma } from "../../../shared/infrastructure/persistence/prisma";
 import { defineBcryptEncoder } from "../../../shared/infrastructure/encoder/bcrypt";
@@ -10,9 +8,8 @@ export function definePrismaUserRepository(): UserRepository {
   const mapper = definePrismaUserRepositoryMapper();
 
   return {
-    async createUser(input: CreateUser): Promise<User> {
+    async createUser(input) {
       const hash = await encoder.hash(input.password);
-
       const user = await prisma.user.create({
         data: {
           email: input.email,
@@ -21,6 +18,31 @@ export function definePrismaUserRepository(): UserRepository {
       });
 
       return mapper.mapToUser(user);
+    },
+
+    async getUserById(input) {
+      const user = await prisma.user.findFirstOrThrow({
+        where: { id: input },
+      });
+
+      return mapper.mapToUser(user);
+    },
+
+    async updateUser({ id, ...rest }) {
+      const user = await prisma.user.update({
+        where: { id },
+        data: {
+          ...rest,
+        },
+      });
+
+      return mapper.mapToUser(user);
+    },
+
+    async deleteUser(input) {
+      await prisma.user.delete({
+        where: { id: input },
+      });
     },
   };
 }
