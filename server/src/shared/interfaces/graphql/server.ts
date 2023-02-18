@@ -43,7 +43,7 @@ export function createServer() {
         listen: { host: _host, port: Number(port) },
 
         async context() {
-          return bootstrap({ repository: "prisma" });
+          return bootstrap({ repository: "prisma", mapper: "grpc" });
         },
       });
 

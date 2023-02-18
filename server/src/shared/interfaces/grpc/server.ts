@@ -43,5 +43,5 @@ export function createServer() {
 }
 
 async function context(_: grpc.ServerUnaryCall<any, any>) {
-  return bootstrap({ repository: "prisma" });
+  return bootstrap({ repository: "prisma", mapper: "grpc" });
 }

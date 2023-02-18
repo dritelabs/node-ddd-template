@@ -1,16 +1,19 @@
 import { CreateUser } from "../../domain/create-user";
 import { User } from "../../domain/user";
+import { UserMapper } from "../../domain/user-mapper";
 import {
   CreateUserRequest,
   User as UserMessage,
 } from "../../../shared/infrastructure/proto/example_pb";
 
-export function mapCreateUserRequestMessageToCreateUserDomain(
-  options: CreateUserRequest
-): CreateUser {
+export function defineGrpcUserMapper(): UserMapper<CreateUserRequest> {
   return {
-    email: options.getEmail(),
-    password: options.getPassword(),
+    async mapToCreateUser(arg) {
+      return {
+        email: arg.getEmail(),
+        password: arg.getPassword(),
+      };
+    },
   };
 }
 
