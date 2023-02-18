@@ -1,25 +1,26 @@
+import { CreateUser } from "../../domain/create-user";
 import { User } from "../../domain/user";
 import { UserRepository } from "../../domain/user-repository";
-import { prisma } from "../../../shared/infrastructure/prisma";
-import { CreateUser } from "../../domain";
+import { prisma } from "../../../shared/infrastructure/persistence/prisma";
+import { defineBcryptEncoder } from "../../../shared/infrastructure/encoder/bcrypt";
+import { definePrismaUserRepositoryMapper } from "../repository-mappers/prisma-user-repository-mapper";
 
 export function definePrismaUserRepository(): UserRepository {
+  const encoder = defineBcryptEncoder();
+  const mapper = definePrismaUserRepositoryMapper();
+
   return {
     async createUser(input: CreateUser): Promise<User> {
+      const hash = await encoder.hash(input.password);
+
       const user = await prisma.user.create({
         data: {
           email: input.email,
-          password: "",
+          password: hash,
         },
       });
 
-      return {
-        id: user.id,
-        email: user.email,
-        firstName: user.firstName!,
-        lastName: user.lastName!,
-        password: user.password,
-      };
+      return mapper.mapToUser(user);
     },
   };
 }

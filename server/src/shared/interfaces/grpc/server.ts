@@ -1,5 +1,5 @@
 import * as grpc from "@grpc/grpc-js";
-import * as userControllers from "./controllers";
+import * as userControllers from "../../../user/interfaces/grpc/controllers";
 
 import {
   ExampleService,

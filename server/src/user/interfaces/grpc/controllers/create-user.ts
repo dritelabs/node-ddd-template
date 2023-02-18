@@ -1,7 +1,7 @@
 import {
   CreateUserRequest,
   User,
-} from "../../../infrastructure/proto/example_pb";
+} from "../../../../shared/infrastructure/proto/example_pb";
 import { Context, HandleUnaryCall } from "../types";
 
 export const createUser: HandleUnaryCall<
