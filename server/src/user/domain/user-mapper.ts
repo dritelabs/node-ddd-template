@@ -1,5 +1,6 @@
 import { CreateUser } from "./create-user";
 
-export interface UserMapper<CreateInput> {
-  mapToCreateUser(input: CreateInput): Promise<CreateUser>;
+export interface UserMapper<DomainType, RequestType, ResponseType> {
+  mapToCreateUserRequest(input: RequestType): Promise<CreateUser>;
+  mapToCreateUserResponse(input: DomainType): Promise<ResponseType>;
 }

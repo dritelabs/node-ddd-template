@@ -6,25 +6,28 @@ import {
   User as UserMessage,
 } from "../../../shared/infrastructure/proto/example_pb";
 
-export function defineGrpcUserMapper(): UserMapper<CreateUserRequest> {
+export function defineGrpcUserMapper(): UserMapper<
+  User,
+  CreateUserRequest,
+  UserMessage
+> {
   return {
-    async mapToCreateUser(arg) {
+    async mapToCreateUserRequest(input) {
       return {
-        email: arg.getEmail(),
-        password: arg.getPassword(),
+        email: input.getEmail(),
+        password: input.getPassword(),
       };
     },
+    async mapToCreateUserResponse(input) {
+      const message = new UserMessage();
+
+      message.setEmail(input.email);
+      message.setId(input.id);
+      message.setFirstName(input.firstName!);
+      message.setLastName(input.lastName!);
+      message.setLastName(input.password);
+
+      return message;
+    },
   };
-}
-
-export function mapUserDomainToUserMessage(options: User) {
-  const message = new UserMessage();
-
-  message.setEmail(options.email);
-  message.setId(options.id);
-  message.setFirstName(options.firstName!);
-  message.setLastName(options.lastName!);
-  message.setLastName(options.password);
-
-  return message;
 }
